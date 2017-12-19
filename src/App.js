@@ -23,11 +23,11 @@ class BooksApp extends React.Component {
   }
   
   changeShelves = (book, shelf) => {
-   //TODO: Change shelve of book between:
-   //"currently reading", "want to read", "read"
     book.shelf = shelf
-    console.log(book)
-    this.setState({ books: book })
+    console.log(book.shelf)
+    this.setState(state => 
+      ({ books: state.books.concat([ book ]) })
+    )
     console.log(this.state.books)
     BooksAPI.update(book, shelf).then( console.log("Moved book - synced with server") )
   }
