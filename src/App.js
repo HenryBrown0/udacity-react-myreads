@@ -14,21 +14,19 @@ class BooksApp extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      books: [] 
+      books: []
     }
   }
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => this.setState({ books }))
   }
-  
+
   changeShelves = (book, shelf) => {
     book.shelf = shelf
-    console.log(book.shelf)
-    this.setState(state => 
-      ({ books: state.books.concat([ book ]) })
-    )
-    console.log(this.state.books)
+    this.setState((prevState, props) => ({
+      book: prevState.books + props.book
+    }));
     BooksAPI.update(book, shelf).then( console.log("Moved book - synced with server") )
   }
 
@@ -37,14 +35,14 @@ class BooksApp extends React.Component {
       <div className="app">
         <Route exact path="/" render={() => (
           <Home
-      	    books={this.state.books}
-			changeShelves={this.changeShelves}
+            books={this.state.books}
+            changeShelves={this.changeShelves}
           />
         )}/>
         <Route exact path="/search/" render={() => (
           <Search
-      	    books={this.state.books}
-			changeShelves={this.changeShelves}
+            books={this.state.books}
+            changeShelves={this.changeShelves}
           />
         )}/>
       </div>
