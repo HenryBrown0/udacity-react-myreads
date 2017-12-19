@@ -10,22 +10,20 @@ import BookShelf from './BookShelf'
 import sortBy from 'sort-by';
 
 class Home extends React.Component {
-  componentDidMount() {
-    
+  state = {
+    books: this.props.books.sort(sortBy('title'))
   }
-  render() {
-    const books = this.props.books.sort(sortBy('title'))
-    
-    let currentBooks = books
+  render() {    
+    let currentBooks = this.state.books
       .filter((book) => book.shelf === "currentlyReading")
     
-    let wantToReadBooks = books
+    let wantToReadBooks = this.state.books
       .filter((book) => book.shelf === "wantToRead")
     
-    let readBooks = books
+    let readBooks = this.state.books
       .filter((book) => book.shelf === "read")
     
-    let noneBooks = books
+    let noneBooks = this.state.books
       .filter((book) => book.shelf === "none")
     
     return (
