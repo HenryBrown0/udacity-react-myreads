@@ -27,7 +27,7 @@ class Search extends React.Component {
                   
   render() {
     const { query } = this.state
-    let books = this.props.books
+	const { books } = this.props
     
     let showingBooks
 	if(query) {
