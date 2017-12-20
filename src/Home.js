@@ -10,7 +10,7 @@ import BookShelf from './BookShelf'
 import sortBy from 'sort-by';
 
 class Home extends React.Component {
-  render() {    
+  render() {
     const books = this.props.books.sort(sortBy('title'))
     const shelves = [
        {
@@ -25,25 +25,25 @@ class Home extends React.Component {
       }, {
         shelf: "none",
         title: "None"
-      }] 
+      }]
     return (
       <div className="list-books">
-      
+
         <div className="list-books-title">
           <h1>MyReads</h1>
         </div>
-      
+
         <div className="list-books-content">
-      	  {shelves.map((shelf) => (
-      	    <BookShelf
-      		  key={shelf.shelf}
-      		  title={shelf.title}
-      		  books={books.filter((book) => book.shelf === shelf.shelf)}
-      		  changeShelves={this.props.changeShelves}
-      	    />
+          {shelves.map((shelf) => (
+            <BookShelf
+              key={shelf.shelf}
+              title={shelf.title}
+              books={books.filter((book) => book.shelf === shelf.shelf)}
+              changeShelves={this.props.changeShelves}
+            />
           ))}
-		</div>
-  
+        </div>
+
         <div className="open-search">
           <Link to="/search/">Add a book</Link>
         </div>
