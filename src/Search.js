@@ -2,8 +2,6 @@
 import React from 'react'
 //Router
 import { Link } from 'react-router-dom'
-//Server API
-//import * as BooksAPI from './BooksAPI'
 //Styles
 import './App.css'
 //Components
