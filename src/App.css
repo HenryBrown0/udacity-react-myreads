@@ -137,6 +137,29 @@ body, .app {
 .book {
   width: 140px;
 }
+.fadeIn{
+  animation:fadeInAnimation 1s;
+  -moz-animation:fadeInAnimation 1s; /* Firefox */
+  -webkit-animation:fadeInAnimation 1s; /* Safari and Chrome */
+  -o-animation:fadeInAnimation 1s; /* Opera */
+  animation:fadeInAnimation 1s;
+}
+@keyframes fadeInAnimation {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
+@-moz-keyframes fadeInAnimation { /* Firefox */
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
+@-webkit-keyframes fadeInAnimation { /* Safari and Chrome */
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
+@-o-keyframes fadeInAnimation { /* Opera */
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
 .book-title,
 .book-authors {
   font-size: 0.8em;
@@ -186,4 +209,15 @@ body, .app {
   padding: 20px 10px 0;
   text-align: center;
   font-size: 0.8em;
+}
+
+/* book details */
+.book-details-home {
+  background-image: url('./icons/home.svg');
+  background-color: #2e7c31;
+  height: inherit;
+}
+
+.book-details-bar {
+  background-color: #2e7c31;
 }
