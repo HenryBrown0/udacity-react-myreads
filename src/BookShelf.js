@@ -4,19 +4,21 @@ import React from 'react'
 import './App.css'
 //Components
 import BookThumbnail from './BookThumbnail'
+import sortBy from 'sort-by';
 
 class BookShelf extends React.Component {
   render() {
+    const { title, changeShelves, books } = this.props;
     return (
       <div className="bookshelf">
-        <h2 className="bookshelf-title">{this.props.title}</h2>
+        <h2 className="bookshelf-title">{title}</h2>
         <div className="bookshelf-books">
           <ol className="books-grid">
-            {this.props.books.map((book) => (
+            {books.sort(sortBy('title')).map((book) => (
               <li key={book.id}>
                 <BookThumbnail
                   book={book}
-                  changeShelves={this.props.changeShelves}
+                  changeShelves={changeShelves}
                 />
               </li>
             ))}

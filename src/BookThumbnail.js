@@ -8,8 +8,8 @@ import './App.css'
 class BookThumbnail extends React.Component {
   render() {
     const book = this.props.book
-    const img = "https"+book.imageLinks.smallThumbnail.substring(4)
-    const link = "/book/" + book.id + "/"
+    const img = `https${book.imageLinks.smallThumbnail.substring(4)}`
+    const link = `/book/${book.id}/`
 
     return (
       <div className="book fadeIn">
