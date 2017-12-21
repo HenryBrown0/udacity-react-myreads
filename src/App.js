@@ -24,10 +24,10 @@ class BooksApp extends React.Component {
   }
 
   changeShelves = (book, shelf) => {
-    book.shelf = shelf 
+    book.shelf = shelf
     BooksAPI.update(book, shelf).then(() => {
       this.setState((prevState) => ({
-        books: prevState.books.concat([book])
+        books: prevState.books.filter((b) => b.title !== book.title).concat([book])
       }));
     })
   }

@@ -35,7 +35,7 @@ class Search extends React.Component {
   render() {
     const { showingBooks, query } = this.state
 
-     let title =
+    let title =
       <div className='showing-contacts'>
         <span>Showing {showingBooks.length} books</span>
         <button onClick={this.clearQuery} className="reset-search">
