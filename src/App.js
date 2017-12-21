@@ -12,8 +12,8 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 class BooksApp extends React.Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
       books: []
     }
@@ -24,11 +24,12 @@ class BooksApp extends React.Component {
   }
 
   changeShelves = (book, shelf) => {
-    book.shelf = shelf
-    this.setState((prevState, props) => ({
-      book: prevState.books + props.book
-    }));
-    BooksAPI.update(book, shelf).then( console.log("Moved book - synced with server") )
+    book.shelf = shelf 
+    BooksAPI.update(book, shelf).then(() => {
+      this.setState((prevState) => ({
+        books: prevState.books.concat([book])
+      }));
+    })
   }
 
   render() {
@@ -43,14 +44,12 @@ class BooksApp extends React.Component {
 
         <Route exact path="/search/" render={() => (
           <Search
-            books={this.state.books}
             changeShelves={this.changeShelves}
           />
         )}/>
 
         <Route path="/book/" render={() => (
           <BookDetails
-            books={this.state.books}
             changeShelves={this.changeShelves}
           />
         )}/>
