@@ -6,40 +6,38 @@ import { Link } from 'react-router-dom'
 import './App.css'
 //Components
 import BookShelf from './BookShelf'
-
-import escapeRegExp from 'escape-string-regexp';
-import sortBy from 'sort-by';
+//ServerAPI
+import * as BooksAPI from './BooksAPI'
 
 class Search extends React.Component {
   state = {
+    showingBooks: [],
     query: ''
   }
 
   updateQuery = query => {
     this.setState({ query: query })
+    if(query){
+      BooksAPI.search(query, )
+        .then((showingBooks) => {
+          this.setState({ showingBooks })
+      	})
+    }else{
+      this.setState({ showingBooks: [] })
+    }
   }
 
   clearQuery = () => {
     this.setState({ query: '' })
+    this.setState({ showingBooks: [] })
   }
 
   render() {
-    const { query } = this.state
-    const { books } = this.props
-
-    let showingBooks
-    if(query) {
-      const match = new RegExp(escapeRegExp(query), 'i')
-      showingBooks = books
-      .filter((book) => match.test(book.title) || match.test(book.authors))
-	   } else {
-       showingBooks = books
-     }
-     showingBooks.sort(sortBy('title'))
+    const { showingBooks, query } = this.state
 
      let title =
       <div className='showing-contacts'>
-        <span>Showing {showingBooks.length} of {books.length} books</span>
+        <span>Showing {showingBooks.length} books</span>
         <button onClick={this.clearQuery} className="reset-search">
           Show all
         </button>
@@ -53,7 +51,7 @@ class Search extends React.Component {
             <input
               type="text"
               placeholder="Search by title or author"
-              value={this.state.query}
+              value={query}
               onChange={(event) => this.updateQuery(event.target.value)}
               />
             </div>
