@@ -16,6 +16,7 @@ class BookDetails extends React.Component {
   }
 
   componentDidMount() {
+    this.setState({ book: { title: "Not found" }})
     const currentRoute = window.location.href;
     const bookID = currentRoute.slice(currentRoute.search("/book/")+6, -1);
     BooksAPI.get(bookID).then((book) => { this.setState({ book }) })
@@ -23,10 +24,12 @@ class BookDetails extends React.Component {
 
   render() {
     const { book } = this.state
-	
+
     const found = book => {
-      const { authors, title, categories, description, publishedDate, previewLink } = book;
-	return (
+    const {
+      authors, title, categories, description, publishedDate, previewLink
+    } = book;
+    return (
       <div className="bookshelf">
         <div className="search-books-bar book-details-bar">
           <Link to="/" className="close-search book-details-home">Home</Link>
@@ -51,7 +54,17 @@ class BookDetails extends React.Component {
       )
     }
 
-    const notFound = <div>Book not found</div>;
+    const notFound = <div className="bookshelf">
+        <div className="search-books-bar book-details-bar">
+          <Link to="/" className="close-search book-details-home">Home</Link>
+            <div className="list-books-title">
+            <h1>Book not found</h1>
+          </div>
+        </div>
+        <div className="search-books-results">
+          Book not found
+        </div>
+      </div>;
 
     return (
       <div className="fadeIn">
