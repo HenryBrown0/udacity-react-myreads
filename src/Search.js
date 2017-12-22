@@ -22,7 +22,7 @@ class Search extends React.Component {
   }
 
   updateQuery = requestQuery => {
-    const query = requestQuery.trim()
+    const query = requestQuery
     this.setState({ query: query })
     query ? this.searchQuery(query) : this.setState({ showingBooks: [] })
   }
