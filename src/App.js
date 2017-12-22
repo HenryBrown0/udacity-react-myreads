@@ -1,11 +1,12 @@
 //Base
 import React from 'react'
 //Router
-import { Route } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 //Pages
 import Home from './Home'
 import Search from './Search'
 import BookDetails from './BookDetails'
+import NotFound from './NotFound'
 //ServerAPI
 import * as BooksAPI from './BooksAPI'
 //Styles
@@ -34,7 +35,7 @@ class BooksApp extends React.Component {
 
   render() {
     return (
-      <div className="app">
+      <Switch className="app">
         <Route exact path="/" render={() => (
           <Home
             books={this.state.books}
@@ -54,8 +55,8 @@ class BooksApp extends React.Component {
             changeShelves={this.changeShelves}
           />
         )}/>
-
-      </div>
+		<Route component={NotFound} />
+      </Switch>
     )
   }
 }
