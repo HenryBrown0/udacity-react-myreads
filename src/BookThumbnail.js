@@ -8,7 +8,11 @@ import './App.css'
 
 const BookThumbnail = (props) => {
   const { book, changeShelves } = props
-  const img = `https${book.imageLinks.smallThumbnail.substring(4)}`
+  let img = null
+  book.imageLinks
+    ? img = `https${book.imageLinks.smallThumbnail.substring(4)}`
+    : img = `https://via.placeholder.com/128x193?text=No%20Cover`
+  if(!book.shelf){ book.shelf = "none" }
   const link = `/book/${book.id}/`
   return (
     <div className="book fadeIn">
@@ -22,9 +26,7 @@ const BookThumbnail = (props) => {
         <div className="book-shelf-changer">
           <select
             defaultValue={book.shelf}
-            onChange={
-              (event) => changeShelves(book, event.target.value)
-            }
+            onChange={ (event) => changeShelves(book, event.target.value) }
           >
             <option disabled>Move to...</option>
             <option value="currentlyReading">Currently Reading</option>
@@ -34,10 +36,10 @@ const BookThumbnail = (props) => {
           </select>
         </div>
       </div>
-      <div
-        className="book-title">{book.title}</div>
-      <div
-        className="book-authors">{book.authors}</div>
+      <div className="book-title">{book.title}</div>
+      <div className="book-authors">
+          {book.authors ? book.authors.join(', ') : ''}
+      </div>
     </div>
   )
 }
