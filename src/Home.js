@@ -3,6 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types';
 //Router
 import { Link } from 'react-router-dom'
+//Lodash
+import lodash from 'lodash'
 //Styles
 import './App.css'
 //Components
@@ -12,20 +14,8 @@ import sortBy from 'sort-by';
 const Home = (props) => {
   const books = props.books.sort(sortBy('title'))
   const { changeShelves } = props
-  const shelves = [
-    {
-      shelf: "currentlyReading",
-      title: "Currently Reading"
-    }, {
-      shelf: "wantToRead",
-      title: "Want to read"
-    }, {
-      shelf: "read",
-      title: "Read"
-    }, {
-      shelf: "none",
-      title: "None"
-    }]
+  const shelves = [ "Currently Reading", "Want to read", "Read", "None" ]
+  
   return (
     <div className="list-books">
 
@@ -36,9 +26,9 @@ const Home = (props) => {
       <div className="list-books-content">
         {shelves.map((shelf) => (
           <BookShelf
-            key={shelf.shelf}
-            title={shelf.title}
-            books={books.filter((book) => book.shelf === shelf.shelf)}
+            key={shelf}
+            title={shelf}
+            books={books.filter((book) => book.shelf === lodash.camelCase([shelf]))}
             changeShelves={changeShelves}
           />
         ))}
