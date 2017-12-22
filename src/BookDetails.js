@@ -1,5 +1,6 @@
 //Base
 import React from 'react'
+import PropTypes from 'prop-types';
 //Router
 import { Link } from 'react-router-dom'
 //Styles
@@ -17,9 +18,7 @@ class BookDetails extends React.Component {
   componentDidMount() {
     const currentRoute = window.location.href;
     const bookID = currentRoute.slice(currentRoute.search("/book/")+6, -1);
-    BooksAPI.get(bookID).then((book) => { 
-      this.setState({ book }) 
-    })
+    BooksAPI.get(bookID).then((book) => { this.setState({ book }) })
   }
 
   render() {
@@ -61,5 +60,9 @@ class BookDetails extends React.Component {
     )
   }
 }
+
+BookDetails.propTypes = {
+  changeShelves: PropTypes.func.isRequired
+};
 
 export default BookDetails
