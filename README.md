@@ -1,6 +1,6 @@
 # MyReads Project
 
-To start the project run npm i to install dependencies. Then run npm start to start the project.
+To start the project run `npm i` to install dependencies. Then run `npm start` to start the project.
 
 Changing book shelfs:
 To change a book shelf select the dropdown arrow on any book and select a new shelf.
