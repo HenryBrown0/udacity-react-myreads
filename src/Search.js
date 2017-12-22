@@ -1,13 +1,19 @@
 //Base
 import React from 'react'
+import PropTypes from 'prop-types';
 //Router
 import { Link } from 'react-router-dom'
+//Lodash
+import lodash from 'lodash'
 //Styles
 import './App.css'
 //Components
 import BookShelf from './BookShelf'
+import sortBy from 'sort-by';
+import escapeRegExp from 'escape-string-regexp';
 //ServerAPI
 import * as BooksAPI from './BooksAPI'
+
 
 class Search extends React.Component {
   state = {
@@ -15,33 +21,38 @@ class Search extends React.Component {
     query: ''
   }
 
-  updateQuery = query => {
+  updateQuery = requestQuery => {
+    const query = requestQuery.trim()
     this.setState({ query: query })
-    if(query){
-      BooksAPI.search(query, )
-        .then((showingBooks) => {
-          this.setState({ showingBooks })
-      	})
-    }else{
-      this.setState({ showingBooks: [] })
-    }
+    query ? this.searchQuery(query) : this.setState({ showingBooks: [] })
   }
 
-  clearQuery = () => {
-    this.setState({ query: '' })
-    this.setState({ showingBooks: [] })
+  searchQuery = query => {
+    BooksAPI.search(query, )
+    .then((results) => {
+      results[0] === undefined 
+      ? this.setState({ showingBooks: [] }) 
+      : this.mergeBooks(results, query)
+    })
+  }
+
+  mergeBooks = (results, query) => {
+    const match = new RegExp(escapeRegExp(query), 'i')
+    //find local results
+    const localResults = this.props.books
+      .filter((b) => match.test(b.title) || match.test(b.authors))
+    //remove books from sever results
+    const serverResults = lodash.differenceBy(results, localResults, 'id')
+    //concat results and sort by title
+    const showingBooks = lodash.concat(localResults, serverResults).sort(sortBy('title'))
+    //set new state
+    this.setState({ showingBooks })
   }
 
   render() {
     const { showingBooks, query } = this.state
 
-    let title =
-      <div className='showing-contacts'>
-        <span>Showing {showingBooks.length} books</span>
-        <button onClick={this.clearQuery} className="reset-search">
-          Show all
-        </button>
-      </div>
+    const title = `Showing ${showingBooks.length} books`;
 
     return (
       <div className="search-books">
@@ -53,19 +64,25 @@ class Search extends React.Component {
               placeholder="Search by title or author"
               value={query}
               onChange={(event) => this.updateQuery(event.target.value)}
-              />
-            </div>
-          </div>
-          <div className="search-books-results">
-            <BookShelf
-              title={title}
-              books={showingBooks}
-              changeShelves={this.props.changeShelves}
+			  autoFocus
             />
           </div>
         </div>
+        <div className="search-books-results">
+          <BookShelf
+            title={title}
+            books={showingBooks}
+            changeShelves={this.props.changeShelves}
+          />
+        </div>
+      </div>
     )
   }
+}
+
+Search.propTypes = {
+  changeShelves: PropTypes.func.isRequired,
+  books: PropTypes.array.isRequired
 }
 
 export default Search
