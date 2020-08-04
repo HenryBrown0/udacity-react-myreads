@@ -3,8 +3,6 @@ import React from "react";
 import PropTypes from "prop-types";
 //Router
 import { Link } from "react-router-dom";
-//Lodash
-import { differenceBy } from "lodash";
 //Styles
 import "./App.css";
 //Components
@@ -35,17 +33,22 @@ class Search extends React.Component {
 
 	mergeBooks = (results, query) => {
 		const match = new RegExp(escapeRegExp(query), "i");
-		//find local results
+		// find local results
 		const localResults = this.props.books.filter(
 			(b) => match.test(b.title) || match.test(b.authors)
 		);
-		//remove books from sever results
-		const serverResults = differenceBy(results, localResults, "id");
-		//concat results and sort by title
+
+		const localBookIds = localResults.map((localBook) => localBook.id);
+		// remove local books from sever results
+		const serverResults = results.filter(
+			(serverBook) => !localBookIds.includes(serverBook.id)
+		);
+
+		// concat results and sort by title
 		const showingBooks = [...localResults, ...serverResults].sort(
 			(a, b) => b.title - a.title
 		);
-		//set new state
+		// set new state
 		this.setState({ showingBooks });
 	};
 
