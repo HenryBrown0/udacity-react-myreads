@@ -25,10 +25,9 @@ class Search extends React.Component {
 		const { showingBooks, query } = this.state;
 
 		const normaliseBook = (unNormalisedBook) => ({
-			id: unNormalisedBook.id || null,
-			authors: unNormalisedBook.authors || [],
+			...unNormalisedBook,
 			shelf: unNormalisedBook.shelf || "none",
-			title: unNormalisedBook.title || null
+			authors: unNormalisedBook.authors || []
 		});
 
 		const mergeBooks = (results, searchQueryString) => {
