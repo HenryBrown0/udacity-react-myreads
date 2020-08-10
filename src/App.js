@@ -27,12 +27,13 @@ class BooksApp extends React.Component {
 	render() {
 		const { books } = this.state;
 
-		const changeShelves = (book, shelf) => {
-			BooksAPI.update(book, shelf).then(() => {
-				this.setState((prevState) => ({
-					books: prevState.books
-						.filter((b) => b.title !== book.title)
-						.concat([{ ...book, shelf }])
+		const changeShelves = (bookId, shelf) => {
+			const book = books.find(({ id: bId }) => bId === bookId);
+			const arrayWithoutBook = books.filter(({ id: bId }) => bId !== bookId);
+
+			BooksAPI.update(bookId, shelf).then(() => {
+				this.setState(() => ({
+					books: arrayWithoutBook.concat([{ ...book, shelf }])
 				}));
 			});
 		};

@@ -31,7 +31,7 @@ const BookThumbnail = (props) => {
 				<div className="book-shelf-changer">
 					<select
 						defaultValue={book.shelf}
-						onChange={(event) => changeShelves(book, event.target.value)}
+						onChange={(event) => changeShelves(book.id, event.target.value)}
 					>
 						<option disabled>Move to...</option>
 						<option value="currentlyReading">Currently Reading</option>
