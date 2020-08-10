@@ -32,7 +32,7 @@ class BooksApp extends React.Component {
 				this.setState((prevState) => ({
 					books: prevState.books
 						.filter((b) => b.title !== book.title)
-						.concat([{ ...book, book: shelf }])
+						.concat([{ ...book, shelf }])
 				}));
 			});
 		};
