@@ -14,7 +14,8 @@ class BookDetails extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			book: {}
+			book: {},
+			loading: true
 		};
 	}
 
@@ -23,15 +24,47 @@ class BookDetails extends React.Component {
 		const currentRoute = window.location.href;
 		const bookID = currentRoute.slice(currentRoute.search("/book/") + 6, -1);
 		BooksAPI.get(bookID).then((book) => {
-			this.setState({ book });
+			this.setState({ book, loading: false });
 		});
 	}
 
 	render() {
 		const { changeShelves } = this.props;
-		const { book } = this.state;
+		const { book, loading } = this.state;
 
-		const Found = () => (
+		if (loading) {
+			return (
+				<div className="bookshelf">
+					<div className="search-books-bar book-details-bar">
+						<Link to="/" className="close-search book-details-home">
+							Home
+						</Link>
+						<div className="list-books-title">
+							<h1>Loading...</h1>
+						</div>
+					</div>
+					<div className="search-books-results">Loading...</div>
+				</div>
+			);
+		}
+
+		if (!book) {
+			return (
+				<div className="bookshelf">
+					<div className="search-books-bar book-details-bar">
+						<Link to="/" className="close-search book-details-home">
+							Home
+						</Link>
+						<div className="list-books-title">
+							<h1>Book not found</h1>
+						</div>
+					</div>
+					<div className="search-books-results">Book not found</div>
+				</div>
+			);
+		}
+
+		return (
 			<div className="bookshelf">
 				<div className="search-books-bar book-details-bar">
 					<Link to="/" className="close-search book-details-home">
@@ -67,22 +100,6 @@ class BookDetails extends React.Component {
 				</div>
 			</div>
 		);
-
-		const notFound = (
-			<div className="bookshelf">
-				<div className="search-books-bar book-details-bar">
-					<Link to="/" className="close-search book-details-home">
-						Home
-					</Link>
-					<div className="list-books-title">
-						<h1>Book not found</h1>
-					</div>
-				</div>
-				<div className="search-books-results">Book not found</div>
-			</div>
-		);
-
-		return <div className="fadeIn">{book.id ? <Found /> : notFound}</div>;
 	}
 }
 
