@@ -1,33 +1,34 @@
-//Base
+// Base
 import React from "react";
 import PropTypes from "prop-types";
-//Router
+// Router
 import { Link } from "react-router-dom";
-//Styles
+// Styles
 import "./App.css";
-//Components
+// Components
 import BookShelf from "./BookShelf";
 
 const Home = (props) => {
-	const books = props.books.sort((a, b) => b.title - a.title);
-	const { changeShelves } = props;
+	const { books, changeShelves } = props;
+
+	const sortedBooks = books.sort((a, b) => b.title - a.title);
 	const shelves = [
 		{
 			human: "Currently Reading",
-			camel: "currentlyReading",
+			camel: "currentlyReading"
 		},
 		{
 			human: "Want to read",
-			camel: "wantToRead",
+			camel: "wantToRead"
 		},
 		{
 			human: "Read",
-			camel: "read",
+			camel: "read"
 		},
 		{
 			human: "None",
-			camel: "none",
-		},
+			camel: "none"
+		}
 	];
 
 	return (
@@ -41,7 +42,7 @@ const Home = (props) => {
 					<BookShelf
 						key={shelf.camel}
 						title={shelf.human}
-						books={books.filter((book) => book.shelf === shelf.camel)}
+						books={sortedBooks.filter((book) => book.shelf === shelf.camel)}
 						changeShelves={changeShelves}
 					/>
 				))}
@@ -56,7 +57,17 @@ const Home = (props) => {
 
 Home.propTypes = {
 	changeShelves: PropTypes.func.isRequired,
-	books: PropTypes.array.isRequired,
+	books: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+			shelf: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired,
+			imageLinks: PropTypes.shape({
+				smallThumbnail: PropTypes.string
+			})
+		}).isRequired
+	).isRequired
 };
 
 export default Home;

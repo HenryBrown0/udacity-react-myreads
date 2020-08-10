@@ -1,22 +1,22 @@
-//Base
+// Base
 import React from "react";
-//Router
+// Router
 import { Switch, Route } from "react-router-dom";
-//Pages
+// Pages
 import Home from "./Home";
 import Search from "./Search";
 import BookDetails from "./BookDetails";
 import NotFound from "./NotFound";
-//ServerAPI
+// ServerAPI
 import * as BooksAPI from "./BooksAPI";
-//Styles
+// Styles
 import "./App.css";
 
 class BooksApp extends React.Component {
 	constructor() {
 		super();
 		this.state = {
-			books: [],
+			books: []
 		};
 	}
 
@@ -24,25 +24,26 @@ class BooksApp extends React.Component {
 		BooksAPI.getAll().then((books) => this.setState({ books }));
 	}
 
-	changeShelves = (book, shelf) => {
-		book.shelf = shelf;
-		BooksAPI.update(book, shelf).then(() => {
-			this.setState((prevState) => ({
-				books: prevState.books
-					.filter((b) => b.title !== book.title)
-					.concat([book]),
-			}));
-		});
-	};
-
 	render() {
+		const { books } = this.state;
+
+		const changeShelves = (book, shelf) => {
+			BooksAPI.update(book, shelf).then(() => {
+				this.setState((prevState) => ({
+					books: prevState.books
+						.filter((b) => b.title !== book.title)
+						.concat([{ ...book, book: shelf }])
+				}));
+			});
+		};
+
 		return (
 			<Switch className="app">
 				<Route
 					exact
 					path="/"
 					render={() => (
-						<Home books={this.state.books} changeShelves={this.changeShelves} />
+						<Home books={books} changeShelves={changeShelves} />
 					)}
 				/>
 
@@ -51,15 +52,15 @@ class BooksApp extends React.Component {
 					path="/search/"
 					render={() => (
 						<Search
-							books={this.state.books}
-							changeShelves={this.changeShelves}
+							books={books}
+							changeShelves={changeShelves}
 						/>
 					)}
 				/>
 
 				<Route
 					path="/book/"
-					render={() => <BookDetails changeShelves={this.changeShelves} />}
+					render={() => <BookDetails changeShelves={changeShelves} />}
 				/>
 				<Route component={NotFound} />
 			</Switch>

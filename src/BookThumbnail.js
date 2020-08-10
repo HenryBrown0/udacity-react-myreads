@@ -1,29 +1,33 @@
-//Base
+// Base
 import React from "react";
 import PropTypes from "prop-types";
-//Router
+// Router
 import { Link } from "react-router-dom";
-//Styles
+// Styles
 import "./App.css";
+
+const PLACE_HOLDER_THUMBNAIL = "https://via.placeholder.com/128x193?text=No%20Cover";
 
 const BookThumbnail = (props) => {
 	const { book, changeShelves } = props;
-	let img = null;
-	book.imageLinks
-		? (img = `https${book.imageLinks.smallThumbnail.substring(4)}`)
-		: (img = `https://via.placeholder.com/128x193?text=No%20Cover`);
-	if (!book.shelf) {
-		book.shelf = "none";
+
+	let bookThumbnail = PLACE_HOLDER_THUMBNAIL;
+	if (book.imageLinks) {
+		bookThumbnail = `https${book.imageLinks.smallThumbnail.substring(4)}`;
 	}
-	const link = `/book/${book.id}/`;
+
 	return (
 		<div className="book fadeIn">
 			<div className="book-top">
 				<Link
-					to={link}
+					to={`/book/${book.id}/`}
 					className="book-cover"
-					style={{ width: 128, height: 193, backgroundImage: `url(${img})` }}
-				></Link>
+					style={{
+						width: 128,
+						height: 193,
+						backgroundImage: `url(${bookThumbnail})`
+					}}
+				/>
 				<div className="book-shelf-changer">
 					<select
 						defaultValue={book.shelf}
@@ -47,7 +51,15 @@ const BookThumbnail = (props) => {
 
 BookThumbnail.propTypes = {
 	changeShelves: PropTypes.func.isRequired,
-	book: PropTypes.object.isRequired,
+	book: PropTypes.shape({
+		id: PropTypes.string.isRequired,
+		authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+		shelf: PropTypes.string.isRequired,
+		title: PropTypes.string.isRequired,
+		imageLinks: PropTypes.shape({
+			smallThumbnail: PropTypes.string
+		})
+	}).isRequired
 };
 
 export default BookThumbnail;

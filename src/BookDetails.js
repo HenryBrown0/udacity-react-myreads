@@ -1,19 +1,22 @@
-//Base
+// Base
 import React from "react";
 import PropTypes from "prop-types";
-//Router
+// Router
 import { Link } from "react-router-dom";
-//Styles
+// Styles
 import "./App.css";
-//Components
+// Components
 import BookThumbnail from "./BookThumbnail";
-//ServerAPI
+// ServerAPI
 import * as BooksAPI from "./BooksAPI";
 
 class BookDetails extends React.Component {
-	state = {
-		book: [],
-	};
+	constructor() {
+		super();
+		this.state = {
+			book: {}
+		};
+	}
 
 	componentDidMount() {
 		this.setState({ book: { title: "Not found" } });
@@ -25,45 +28,45 @@ class BookDetails extends React.Component {
 	}
 
 	render() {
+		const { changeShelves } = this.props;
 		const { book } = this.state;
 
-		const found = (book) => {
-			const {
-				authors,
-				title,
-				categories,
-				description,
-				publishedDate,
-				previewLink,
-			} = book;
-			return (
-				<div className="bookshelf">
-					<div className="search-books-bar book-details-bar">
-						<Link to="/" className="close-search book-details-home">
-							Home
-						</Link>
-						<div className="list-books-title">
-							<h1>
-								{title} - {authors}
-							</h1>
-						</div>
-					</div>
-					<div className="search-books-results">
-						<BookThumbnail
-							className="bookdetails-center"
-							book={book}
-							changeShelves={this.props.changeShelves}
-						/>
-						<ul>
-							<li>Cateogories: {categories}</li>
-							<li>Description: {description}</li>
-							<li>Published Date: {publishedDate}</li>
-						</ul>
-						<a href={previewLink}>Preview book</a>
+		const Found = () => (
+			<div className="bookshelf">
+				<div className="search-books-bar book-details-bar">
+					<Link to="/" className="close-search book-details-home">
+						Home
+					</Link>
+					<div className="list-books-title">
+						<h1>
+							{`${book.title} - ${book.authors}`}
+						</h1>
 					</div>
 				</div>
-			);
-		};
+				<div className="search-books-results">
+					<BookThumbnail
+						className="bookdetails-center"
+						book={book}
+						changeShelves={changeShelves}
+					/>
+					<ul>
+						<li>
+							Cateogories:
+							{book.categories}
+						</li>
+						<li>
+							Description:
+							{book.description}
+						</li>
+						<li>
+							Published Date:
+							{book.publishedDate}
+						</li>
+					</ul>
+					<a href={book.previewLink}>Preview book</a>
+				</div>
+			</div>
+		);
 
 		const notFound = (
 			<div className="bookshelf">
@@ -79,12 +82,12 @@ class BookDetails extends React.Component {
 			</div>
 		);
 
-		return <div className="fadeIn">{book.title ? found(book) : notFound}</div>;
+		return <div className="fadeIn">{book.id ? <Found /> : notFound}</div>;
 	}
 }
 
 BookDetails.propTypes = {
-	changeShelves: PropTypes.func.isRequired,
+	changeShelves: PropTypes.func.isRequired
 };
 
 export default BookDetails;

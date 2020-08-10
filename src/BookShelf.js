@@ -1,13 +1,14 @@
-//Base
+// Base
 import React from "react";
 import PropTypes from "prop-types";
-//Styles
+// Styles
 import "./App.css";
-//Components
+// Components
 import BookThumbnail from "./BookThumbnail";
 
 const BookShelf = (props) => {
 	const { title, changeShelves, books } = props;
+
 	return (
 		<div className="bookshelf">
 			<h2 className="bookshelf-title">{title}</h2>
@@ -29,7 +30,17 @@ const BookShelf = (props) => {
 BookShelf.propTypes = {
 	title: PropTypes.string.isRequired,
 	changeShelves: PropTypes.func.isRequired,
-	books: PropTypes.array.isRequired,
+	books: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+			shelf: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired,
+			imageLinks: PropTypes.shape({
+				smallThumbnail: PropTypes.string
+			})
+		}).isRequired
+	).isRequired
 };
 
 export default BookShelf;

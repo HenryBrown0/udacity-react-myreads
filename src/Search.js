@@ -1,59 +1,75 @@
-//Base
+// Base
 import React from "react";
 import PropTypes from "prop-types";
-//Router
+// Router
 import { Link } from "react-router-dom";
-//Styles
+// Styles
 import "./App.css";
-//Components
-import BookShelf from "./BookShelf";
+// Components
 import escapeRegExp from "escape-string-regexp";
-//ServerAPI
+import BookShelf from "./BookShelf";
+// ServerAPI
 import * as BooksAPI from "./BooksAPI";
 
 class Search extends React.Component {
-	state = {
-		showingBooks: [],
-		query: "",
-	};
-
-	updateQuery = (requestQuery) => {
-		const query = requestQuery;
-		this.setState({ query: query });
-		query ? this.searchQuery(query) : this.setState({ showingBooks: [] });
-	};
-
-	searchQuery = (query) => {
-		BooksAPI.search(query).then((results) => {
-			results[0] === undefined
-				? this.setState({ showingBooks: [] })
-				: this.mergeBooks(results, query);
-		});
-	};
-
-	mergeBooks = (results, query) => {
-		const match = new RegExp(escapeRegExp(query), "i");
-		// find local results
-		const localResults = this.props.books.filter(
-			(b) => match.test(b.title) || match.test(b.authors)
-		);
-
-		const localBookIds = localResults.map((localBook) => localBook.id);
-		// remove local books from sever results
-		const serverResults = results.filter(
-			(serverBook) => !localBookIds.includes(serverBook.id)
-		);
-
-		// concat results and sort by title
-		const showingBooks = [...localResults, ...serverResults].sort(
-			(a, b) => b.title - a.title
-		);
-		// set new state
-		this.setState({ showingBooks });
-	};
+	constructor() {
+		super();
+		this.state = {
+			showingBooks: [],
+			query: ""
+		};
+	}
 
 	render() {
+		const { books, changeShelves } = this.props;
 		const { showingBooks, query } = this.state;
+
+		const normaliseBook = (unNormalisedBook) => ({
+			id: unNormalisedBook.id || null,
+			authors: unNormalisedBook.authors || [],
+			shelf: unNormalisedBook.shelf || "none",
+			title: unNormalisedBook.title || null
+		});
+
+		const mergeBooks = (results, searchQueryString) => {
+			const match = new RegExp(escapeRegExp(searchQueryString), "i");
+			// find local results
+			const localResults = books.filter(
+				(b) => match.test(b.title) || match.test(b.authors)
+			);
+
+			const localBookIds = localResults.map((localBook) => localBook.id);
+			// remove local books from sever results
+			const serverResults = results.filter(
+				(serverBook) => !localBookIds.includes(serverBook.id)
+			).map(normaliseBook);
+
+			// concat results and sort by title
+			const newShowingBooks = [...localResults, ...serverResults].sort(
+				(a, b) => b.title - a.title
+			);
+			// set new state
+			this.setState({ showingBooks: newShowingBooks });
+		};
+
+		const searchQuery = (searchQueryString) => {
+			BooksAPI.search(searchQueryString).then((results) => {
+				if (!results) {
+					this.setState({ showingBooks: [] });
+				} else {
+					mergeBooks(results, searchQueryString);
+				}
+			});
+		};
+
+		const updateQuery = (requestQuery) => {
+			this.setState({ query: requestQuery });
+			if (requestQuery) {
+				searchQuery(requestQuery);
+			} else {
+				this.setState({ showingBooks: [] });
+			}
+		};
 
 		const title = `Showing ${showingBooks.length} books`;
 
@@ -68,8 +84,7 @@ class Search extends React.Component {
 							type="text"
 							placeholder="Search by title or author"
 							value={query}
-							onChange={(event) => this.updateQuery(event.target.value)}
-							autoFocus
+							onChange={(event) => updateQuery(event.target.value)}
 						/>
 					</div>
 				</div>
@@ -77,7 +92,7 @@ class Search extends React.Component {
 					<BookShelf
 						title={title}
 						books={showingBooks}
-						changeShelves={this.props.changeShelves}
+						changeShelves={changeShelves}
 					/>
 				</div>
 			</div>
@@ -87,7 +102,17 @@ class Search extends React.Component {
 
 Search.propTypes = {
 	changeShelves: PropTypes.func.isRequired,
-	books: PropTypes.array.isRequired,
+	books: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+			shelf: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired,
+			imageLinks: PropTypes.shape({
+				smallThumbnail: PropTypes.string
+			})
+		}).isRequired
+	).isRequired
 };
 
 export default Search;

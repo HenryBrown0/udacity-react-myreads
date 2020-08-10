@@ -1,11 +1,11 @@
-//Base
+// Base
 import React from "react";
 import ReactDOM from "react-dom";
-//Router
+// Router
 import { BrowserRouter } from "react-router-dom";
-//Components
+// Components
 import App from "./App";
-//Styles
+// Styles
 import "./index.css";
 
 ReactDOM.render(
