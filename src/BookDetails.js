@@ -11,16 +11,13 @@ import BookThumbnail from "./BookThumbnail";
 import * as BooksAPI from "./BooksAPI";
 
 const BookDetails = (props) => {
-	const { changeShelves } = props;
+	const { changeShelves, bookId, books } = props;
 
-	const currentRoute = window.location.href;
-	const bookId = currentRoute.slice(currentRoute.search("/book/") + 6, -1);
-
-	const [book, setBook] = useState({});
-	const [isLoading, setLoading] = useState(true);
+	const [book, setBook] = useState(books.find(({ id: bId }) => bId === bookId));
+	const [isLoading, setLoading] = useState(!book);
 
 	useEffect(() => {
-		if (bookId) {
+		if (bookId && !book) {
 			BooksAPI.get(bookId)
 				.then((foundBook) => {
 					setBook(foundBook);
@@ -100,7 +97,19 @@ const BookDetails = (props) => {
 };
 
 BookDetails.propTypes = {
-	changeShelves: PropTypes.func.isRequired
+	bookId: PropTypes.string.isRequired,
+	changeShelves: PropTypes.func.isRequired,
+	books: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+			shelf: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired,
+			imageLinks: PropTypes.shape({
+				smallThumbnail: PropTypes.string
+			})
+		}).isRequired
+	).isRequired
 };
 
 export default BookDetails;
