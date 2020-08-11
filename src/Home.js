@@ -8,28 +8,25 @@ import "./App.css";
 // Components
 import BookShelf from "./BookShelf";
 
+const SHELVES = [
+	{
+		human: "Currently Reading",
+		camel: "currentlyReading"
+	},
+	{
+		human: "Want to read",
+		camel: "wantToRead"
+	},
+	{
+		human: "Read",
+		camel: "read"
+	}
+];
+
 const Home = (props) => {
 	const { books, changeShelves } = props;
 
 	const sortedBooks = books.sort((a, b) => b.title - a.title);
-	const shelves = [
-		{
-			human: "Currently Reading",
-			camel: "currentlyReading"
-		},
-		{
-			human: "Want to read",
-			camel: "wantToRead"
-		},
-		{
-			human: "Read",
-			camel: "read"
-		},
-		{
-			human: "None",
-			camel: "none"
-		}
-	];
 
 	return (
 		<div className="list-books">
@@ -38,7 +35,7 @@ const Home = (props) => {
 			</div>
 
 			<div className="list-books-content">
-				{shelves.map((shelf) => (
+				{SHELVES.map((shelf) => (
 					<BookShelf
 						key={shelf.camel}
 						title={shelf.human}

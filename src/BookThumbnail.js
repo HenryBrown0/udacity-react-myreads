@@ -30,7 +30,7 @@ const BookThumbnail = (props) => {
 				/>
 				<div className="book-shelf-changer">
 					<select
-						defaultValue={book.shelf}
+						defaultValue={book.shelf || "none"}
 						onChange={(event) => changeShelves(book.id, event.target.value)}
 					>
 						<option disabled>Move to...</option>
@@ -53,8 +53,8 @@ BookThumbnail.propTypes = {
 	changeShelves: PropTypes.func.isRequired,
 	book: PropTypes.shape({
 		id: PropTypes.string.isRequired,
-		authors: PropTypes.arrayOf(PropTypes.string).isRequired,
-		shelf: PropTypes.string.isRequired,
+		authors: PropTypes.arrayOf(PropTypes.string),
+		shelf: PropTypes.string,
 		title: PropTypes.string.isRequired,
 		imageLinks: PropTypes.shape({
 			smallThumbnail: PropTypes.string

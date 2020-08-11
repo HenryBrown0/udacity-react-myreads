@@ -33,8 +33,8 @@ BookShelf.propTypes = {
 	books: PropTypes.arrayOf(
 		PropTypes.shape({
 			id: PropTypes.string.isRequired,
-			authors: PropTypes.arrayOf(PropTypes.string).isRequired,
-			shelf: PropTypes.string.isRequired,
+			authors: PropTypes.arrayOf(PropTypes.string),
+			shelf: PropTypes.string,
 			title: PropTypes.string.isRequired,
 			imageLinks: PropTypes.shape({
 				smallThumbnail: PropTypes.string

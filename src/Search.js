@@ -24,12 +24,6 @@ class Search extends React.Component {
 		const { books, changeShelves } = this.props;
 		const { showingBooks, query } = this.state;
 
-		const normaliseBook = (unNormalisedBook) => ({
-			...unNormalisedBook,
-			shelf: unNormalisedBook.shelf || "none",
-			authors: unNormalisedBook.authors || []
-		});
-
 		const mergeBooks = (results, searchQueryString) => {
 			const match = new RegExp(escapeRegExp(searchQueryString), "i");
 			// find local results
@@ -41,7 +35,7 @@ class Search extends React.Component {
 			// remove local books from sever results
 			const serverResults = results.filter(
 				(serverBook) => !localBookIds.includes(serverBook.id)
-			).map(normaliseBook);
+			);
 
 			// concat results and sort by title
 			const newShowingBooks = [...localResults, ...serverResults].sort(
