@@ -1,11 +1,10 @@
 // Base
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-// Router
-import { Link } from "react-router-dom";
 // Styles
 import "./App.css";
 // Components
+import Header from "./component/Header";
 import BookThumbnail from "./BookThumbnail";
 // ServerAPI
 import * as BooksAPI from "./BooksAPI";
@@ -29,14 +28,7 @@ const BookDetails = (props) => {
 	if (isLoading) {
 		return (
 			<div className="bookshelf">
-				<div className="search-books-bar book-details-bar">
-					<Link to="/" className="close-search book-details-home">
-						Home
-					</Link>
-					<div className="list-books-title">
-						<h1>Loading...</h1>
-					</div>
-				</div>
+				<Header title="Book Details" />
 				<div className="search-books-results">Loading...</div>
 			</div>
 		);
@@ -45,14 +37,7 @@ const BookDetails = (props) => {
 	if (!book) {
 		return (
 			<div className="bookshelf">
-				<div className="search-books-bar book-details-bar">
-					<Link to="/" className="close-search book-details-home">
-						Home
-					</Link>
-					<div className="list-books-title">
-						<h1>Book not found</h1>
-					</div>
-				</div>
+				<Header title="Book Details" />
 				<div className="search-books-results">Book not found</div>
 			</div>
 		);
@@ -60,16 +45,7 @@ const BookDetails = (props) => {
 
 	return (
 		<div className="bookshelf">
-			<div className="search-books-bar book-details-bar">
-				<Link to="/" className="close-search book-details-home">
-					Home
-				</Link>
-				<div className="list-books-title">
-					<h1>
-						{`${book.title} - ${book.authors}`}
-					</h1>
-				</div>
-			</div>
+			<Header title="Book Details" />
 			<div className="search-books-results">
 				<BookThumbnail
 					className="bookdetails-center"
