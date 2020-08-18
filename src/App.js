@@ -53,17 +53,12 @@ const BooksApp = () => {
 			<Route
 				exact
 				path="/book/:bookId"
-				render={(props) => {
-					const { bookId } = props.match.params;
-
-					return (
-						<BookDetails
-							changeShelves={changeShelves}
-							bookId={bookId}
-							books={books}
-						/>
-					);
-				}}
+				render={() => (
+					<BookDetails
+						changeShelves={changeShelves}
+						books={books}
+					/>
+				)}
 			/>
 			<Route component={NotFound} />
 		</Switch>

@@ -1,6 +1,7 @@
 // Base
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { useParams } from "react-router-dom";
 // Styles
 import "./App.css";
 // Components
@@ -10,7 +11,9 @@ import BookThumbnail from "./BookThumbnail";
 import * as BooksAPI from "./BooksAPI";
 
 const BookDetails = (props) => {
-	const { changeShelves, bookId, books } = props;
+	const { changeShelves, books } = props;
+
+	const { bookId } = useParams();
 
 	const [book, setBook] = useState(books.find(({ id: bId }) => bId === bookId));
 	const [isLoading, setLoading] = useState(!book);
@@ -73,7 +76,6 @@ const BookDetails = (props) => {
 };
 
 BookDetails.propTypes = {
-	bookId: PropTypes.string.isRequired,
 	changeShelves: PropTypes.func.isRequired,
 	books: PropTypes.arrayOf(
 		PropTypes.shape({
