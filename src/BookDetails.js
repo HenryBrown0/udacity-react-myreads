@@ -1,81 +1,93 @@
-//Base
-import React from 'react'
-import PropTypes from 'prop-types';
-//Router
-import { Link } from 'react-router-dom'
-//Styles
-import './App.css'
-//Components
-import BookThumbnail from './BookThumbnail'
-//ServerAPI
-import * as BooksAPI from './BooksAPI'
+// Base
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useParams } from "react-router-dom";
+// Styles
+import "./App.css";
+// Components
+import Header from "./component/Header";
+import BookThumbnail from "./BookThumbnail";
+// ServerAPI
+import * as BooksAPI from "./BooksAPI";
 
-class BookDetails extends React.Component {
-  state = {
-    book: []
-  }
+const BookDetails = (props) => {
+	const { changeShelves, books } = props;
 
-  componentDidMount() {
-    this.setState({ book: { title: "Not found" }})
-    const currentRoute = window.location.href;
-    const bookID = currentRoute.slice(currentRoute.search("/book/")+6, -1);
-    BooksAPI.get(bookID).then((book) => { this.setState({ book }) })
-  }
+	const { bookId } = useParams();
 
-  render() {
-    const { book } = this.state
+	const [book, setBook] = useState(books.find(({ id: bId }) => bId === bookId));
+	const [isLoading, setLoading] = useState(!book);
 
-    const found = book => {
-    const {
-      authors, title, categories, description, publishedDate, previewLink
-    } = book;
-    return (
-      <div className="bookshelf">
-        <div className="search-books-bar book-details-bar">
-          <Link to="/" className="close-search book-details-home">Home</Link>
-            <div className="list-books-title">
-            <h1>{title} - {authors}</h1>
-          </div>
-        </div>
-        <div className="search-books-results">
-          <BookThumbnail
-            className="bookdetails-center"
-            book={book}
-            changeShelves={this.props.changeShelves}
-          />
-          <ul>
-            <li>Cateogories: {categories}</li>
-            <li>Description: {description}</li>
-            <li>Published Date: {publishedDate}</li>
-          </ul>
-          <a href={previewLink}>Preview book</a>
-        </div>
-      </div>
-      )
-    }
+	useEffect(() => {
+		if (bookId && !book) {
+			BooksAPI.get(bookId)
+				.then((foundBook) => {
+					setBook(foundBook);
+					setLoading(false);
+				});
+		}
+	}, [bookId]);
 
-    const notFound = <div className="bookshelf">
-        <div className="search-books-bar book-details-bar">
-          <Link to="/" className="close-search book-details-home">Home</Link>
-            <div className="list-books-title">
-            <h1>Book not found</h1>
-          </div>
-        </div>
-        <div className="search-books-results">
-          Book not found
-        </div>
-      </div>;
+	if (isLoading) {
+		return (
+			<div className="bookshelf">
+				<Header title="Book Details" />
+				<div className="search-books-results">Loading...</div>
+			</div>
+		);
+	}
 
-    return (
-      <div className="fadeIn">
-        {book.title ? found(book) : notFound}
-      </div>
-    )
-  }
-}
+	if (!book) {
+		return (
+			<div className="bookshelf">
+				<Header title="Book Details" />
+				<div className="search-books-results">Book not found</div>
+			</div>
+		);
+	}
 
-BookDetails.propTypes = {
-  changeShelves: PropTypes.func.isRequired
+	return (
+		<div className="bookshelf">
+			<Header title="Book Details" />
+			<div className="search-books-results">
+				<BookThumbnail
+					className="bookdetails-center"
+					book={book}
+					changeShelves={changeShelves}
+				/>
+				<ul>
+					<li>
+						Categories:
+						{book.categories}
+					</li>
+					<li>
+						Description:
+						{book.description}
+					</li>
+					<li>
+						Published Date:
+						{book.publishedDate}
+					</li>
+				</ul>
+				<a href={book.previewLink}>Preview book</a>
+			</div>
+		</div>
+	);
 };
 
-export default BookDetails
+BookDetails.propTypes = {
+	changeShelves: PropTypes.func.isRequired,
+	books: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+			shelf: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired,
+			imageLinks: PropTypes.shape({
+				smallThumbnail: PropTypes.string
+			})
+		}).isRequired
+	).isRequired
+};
+
+export default BookDetails;

@@ -1,88 +1,134 @@
-//Base
-import React from 'react'
-import PropTypes from 'prop-types';
-//Router
-import { Link } from 'react-router-dom'
-//Lodash
-import lodash from 'lodash'
-//Styles
-import './App.css'
-//Components
-import BookShelf from './BookShelf'
-import sortBy from 'sort-by';
-import escapeRegExp from 'escape-string-regexp';
-//ServerAPI
-import * as BooksAPI from './BooksAPI'
+// Base
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+// Router
+import { Link } from "react-router-dom";
+// Styles
+import "./App.css";
+// Components
+import escapeRegExp from "escape-string-regexp";
+import BookShelf from "./BookShelf";
+import useDebounce from "./component/useDebounce";
+// ServerAPI
+import * as BooksAPI from "./BooksAPI";
 
+const Search = (props) => {
+	const { books, changeShelves } = props;
 
-class Search extends React.Component {
-  state = {
-    showingBooks: [],
-    query: ''
-  }
+	const [localBooks, setLocalBooks] = useState([]);
+	const [networkBooks, setNetworkBooks] = useState([]);
+	const [query, setQuery] = useState("");
 
-  updateQuery = requestQuery => {
-    const query = requestQuery
-    this.setState({ query: query })
-    query ? this.searchQuery(query) : this.setState({ showingBooks: [] })
-  }
+	const debouncedSearch = useDebounce(query, 500);
 
-  searchQuery = query => {
-    BooksAPI.search(query, )
-    .then((results) => {
-      results[0] === undefined 
-      ? this.setState({ showingBooks: [] }) 
-      : this.mergeBooks(results, query)
-    })
-  }
+	const findLocalBooks = (requestQuery) => {
+		const match = new RegExp(escapeRegExp(requestQuery), "i");
 
-  mergeBooks = (results, query) => {
-    const match = new RegExp(escapeRegExp(query), 'i')
-    //find local results
-    const localResults = this.props.books
-      .filter((b) => match.test(b.title) || match.test(b.authors))
-    //remove books from sever results
-    const serverResults = lodash.differenceBy(results, localResults, 'id')
-    //concat results and sort by title
-    const showingBooks = lodash.concat(localResults, serverResults).sort(sortBy('title'))
-    //set new state
-    this.setState({ showingBooks })
-  }
+		return books
+			.filter((b) => match.test(b.title) || match.test(b.authors))
+			.sort((a, b) => b.title - a.title);
+	};
 
-  render() {
-    const { showingBooks, query } = this.state
+	const fetchNetworkBooks = async (requestQuery) => {
+		if (!requestQuery) {
+			return setNetworkBooks([]);
+		}
 
-    const title = `Showing ${showingBooks.length} books`;
+		let results;
+		try {
+			results = await BooksAPI.search(requestQuery);
+		} catch (error) {
+			console.error(error);
+			return null;
+		}
 
-    return (
-      <div className="search-books">
-        <div className="search-books-bar">
-          <Link className="close-search" to="/">Close</Link>
-          <div className="search-books-input-wrapper">
-            <input
-              type="text"
-              placeholder="Search by title or author"
-              value={query}
-              onChange={(event) => this.updateQuery(event.target.value)}
-			  autoFocus
-            />
-          </div>
-        </div>
-        <div className="search-books-results">
-          <BookShelf
-            title={title}
-            books={showingBooks}
-            changeShelves={this.props.changeShelves}
-          />
-        </div>
-      </div>
-    )
-  }
-}
+		// remove local books from sever results
+		const localBookIds = localBooks.map((localBook) => localBook.id);
+
+		const filteredResults = results
+			.filter((serverBook) => !localBookIds.includes(serverBook.id))
+			.sort((a, b) => b.title - a.title);
+
+		return setNetworkBooks(filteredResults);
+	};
+
+	const updateQuery = (requestQuery) => {
+		const url = new URL(window.location);
+
+		setQuery(requestQuery);
+
+		if (requestQuery) {
+			setLocalBooks(findLocalBooks(requestQuery));
+			window.history.pushState({ requestQuery }, "", `${url.origin}${url.pathname}?q=${requestQuery}`);
+		} else {
+			setLocalBooks([]);
+			setNetworkBooks([]);
+			window.history.pushState({ requestQuery }, "", `${url.origin}${url.pathname}`);
+		}
+	};
+
+	window.onpopstate = (event) => {
+		const { requestQuery } = event.state;
+
+		updateQuery(requestQuery);
+	};
+
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		if (urlParams.has("q")) updateQuery(urlParams.get("q"));
+	}, [books]);
+
+	useEffect(() => {
+		if (query) {
+			fetchNetworkBooks(query);
+		}
+	}, [debouncedSearch]);
+
+	return (
+		<div className="search-books">
+			<div className="search-books-bar">
+				<Link className="close-search" to="/">
+					Close
+				</Link>
+				<div className="search-books-input-wrapper">
+					<input
+						type="text"
+						placeholder="Search by title or author"
+						value={query}
+						onChange={(event) => updateQuery(event.target.value)}
+					/>
+				</div>
+			</div>
+			<div className="search-books-results">
+				<BookShelf
+					title={`Found ${localBooks.length} local book${localBooks.length !== 1 ? "s" : ""}`}
+					books={localBooks}
+					changeShelves={changeShelves}
+				/>
+				<BookShelf
+					title={`Showing ${networkBooks.length} network book${networkBooks.length !== 1 ? "s" : ""}`}
+					books={networkBooks}
+					changeShelves={changeShelves}
+				/>
+			</div>
+		</div>
+	);
+};
 
 Search.propTypes = {
-  changeShelves: PropTypes.func.isRequired,
-  books: PropTypes.array.isRequired
-}
+	changeShelves: PropTypes.func.isRequired,
+	books: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			authors: PropTypes.arrayOf(PropTypes.string).isRequired,
+			shelf: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired,
+			imageLinks: PropTypes.shape({
+				smallThumbnail: PropTypes.string
+			})
+		}).isRequired
+	).isRequired
+};
 
-export default Search
+export default Search;
