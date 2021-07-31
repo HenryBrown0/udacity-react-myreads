@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 // Styles
-import "./App.css";
+import "../App.css";
 // Components
 import BookThumbnail from "./BookThumbnail";
 

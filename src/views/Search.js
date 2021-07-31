@@ -4,13 +4,13 @@ import PropTypes from "prop-types";
 // Router
 import { Link } from "react-router-dom";
 // Styles
-import "./App.css";
+import "../App.css";
 // Components
 import escapeRegExp from "escape-string-regexp";
-import BookShelf from "./BookShelf";
-import useDebounce from "./component/useDebounce";
+import BookShelf from "../components/BookShelf";
+import useDebounce from "../hooks/useDebounce";
 // ServerAPI
-import * as BooksAPI from "./BooksAPI";
+import * as BooksAPI from "../BooksAPI";
 
 const Search = (props) => {
 	const { books, changeShelves } = props;

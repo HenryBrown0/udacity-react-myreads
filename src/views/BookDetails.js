@@ -3,12 +3,12 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useParams } from "react-router-dom";
 // Styles
-import "./App.css";
+import "../App.css";
 // Components
-import Header from "./component/Header";
-import BookThumbnail from "./BookThumbnail";
+import Header from "../components/Header";
+import BookThumbnail from "../components/BookThumbnail";
 // ServerAPI
-import * as BooksAPI from "./BooksAPI";
+import * as BooksAPI from "../BooksAPI";
 
 const BookDetails = (props) => {
 	const { changeShelves, books } = props;

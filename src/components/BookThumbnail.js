@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 // Router
 import { Link } from "react-router-dom";
 // Styles
-import "./App.css";
+import "../App.css";
 
 const PLACE_HOLDER_THUMBNAIL = "https://via.placeholder.com/128x193?text=No%20Cover";
 

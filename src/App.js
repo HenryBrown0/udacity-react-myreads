@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 // Router
 import { Switch, Route } from "react-router-dom";
 // Pages
-import Home from "./Home";
-import Search from "./Search";
-import BookDetails from "./BookDetails";
-import NotFound from "./NotFound";
+import Home from "./views/Home";
+import Search from "./views/Search";
+import BookDetails from "./views/BookDetails";
+import NotFound from "./views/NotFound";
 // ServerAPI
 import * as BooksAPI from "./BooksAPI";
 // Styles

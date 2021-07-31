@@ -3,7 +3,7 @@ import React from "react";
 // Router
 import { Link } from "react-router-dom";
 // Styles
-import "./App.css";
+import "../App.css";
 
 const NotFound = () => (
 	<div className="list-books">

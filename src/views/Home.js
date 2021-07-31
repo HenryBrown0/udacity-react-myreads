@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 // Router
 import { Link } from "react-router-dom";
 // Styles
-import "./App.css";
+import "../App.css";
 // Components
-import BookShelf from "./BookShelf";
+import BookShelf from "../components/BookShelf";
 
 const SHELVES = [
 	{
