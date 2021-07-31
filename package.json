@@ -29,7 +29,7 @@
 		"eslint-plugin-jsx-a11y": "^6.3.1",
 		"eslint-plugin-react": "^7.20.5",
 		"eslint-plugin-react-hooks": "^4.0.8",
-		"parcel": "^2.0.0-beta.2"
+		"parcel-bundler": "^1.12.4"
 	},
 	"scripts": {
 		"start": "parcel public/index.html",
@@ -38,5 +38,9 @@
 	},
 	"browserslist": [
 		"since 2017-06"
-	]
+	],
+	"engines": {
+		"node": "^14.17.0",
+		"yarn": "^1.22"
+	}
 }
