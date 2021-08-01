@@ -5,14 +5,19 @@ import PropTypes from "prop-types";
 import "../App.css";
 // Components
 import BookThumbnail from "./BookThumbnail";
+import Loading from "./Loading";
 
 const BookShelf = (props) => {
-	const { title, changeShelves, books } = props;
+	const {
+		title, changeShelves, books, isLoading
+	} = props;
 
 	return (
 		<div className="bookshelf">
 			<h2 className="bookshelf-title">{title}</h2>
 			<div className="bookshelf-books">
+				{isLoading && <Loading /> }
+				{books.length === 0 && !isLoading && <div>No books found</div>}
 				<ol className="books-grid">
 					{books
 						.sort((a, b) => b.title - a.title)
@@ -40,7 +45,8 @@ BookShelf.propTypes = {
 				smallThumbnail: PropTypes.string
 			})
 		}).isRequired
-	).isRequired
+	).isRequired,
+	isLoading: PropTypes.bool.isRequired
 };
 
 export default BookShelf;

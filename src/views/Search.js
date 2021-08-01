@@ -13,8 +13,9 @@ import useDebounce from "../hooks/useDebounce";
 import * as BooksAPI from "../BooksAPI";
 
 const Search = (props) => {
-	const { books, changeShelves } = props;
+	const { books, changeShelves, isLibraryLoading } = props;
 
+	const [isLoading, setIsLoading] = useState(false);
 	const [localBooks, setLocalBooks] = useState([]);
 	const [networkBooks, setNetworkBooks] = useState([]);
 	const [query, setQuery] = useState("");
@@ -40,6 +41,8 @@ const Search = (props) => {
 		} catch (error) {
 			console.error(error);
 			return null;
+		} finally {
+			setIsLoading(false);
 		}
 
 		// remove local books from sever results
@@ -81,9 +84,10 @@ const Search = (props) => {
 
 	useEffect(() => {
 		if (query) {
+			setIsLoading(true);
 			fetchNetworkBooks(query);
 		}
-	}, [debouncedSearch]);
+	}, [debouncedSearch], () => setIsLoading(false));
 
 	return (
 		<div className="search-books">
@@ -105,11 +109,13 @@ const Search = (props) => {
 					title={`Found ${localBooks.length} local book${localBooks.length !== 1 ? "s" : ""}`}
 					books={localBooks}
 					changeShelves={changeShelves}
+					isLoading={isLibraryLoading}
 				/>
 				<BookShelf
 					title={`Showing ${networkBooks.length} network book${networkBooks.length !== 1 ? "s" : ""}`}
 					books={networkBooks}
 					changeShelves={changeShelves}
+					isLoading={isLoading}
 				/>
 			</div>
 		</div>
@@ -128,7 +134,8 @@ Search.propTypes = {
 				smallThumbnail: PropTypes.string
 			})
 		}).isRequired
-	).isRequired
+	).isRequired,
+	isLibraryLoading: PropTypes.bool.isRequired
 };
 
 export default Search;

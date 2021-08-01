@@ -24,7 +24,7 @@ const SHELVES = [
 ];
 
 const Home = (props) => {
-	const { books, changeShelves } = props;
+	const { books, changeShelves, isLibraryLoading } = props;
 
 	const sortedBooks = books.sort((a, b) => b.title - a.title);
 
@@ -41,6 +41,7 @@ const Home = (props) => {
 						title={shelf.human}
 						books={sortedBooks.filter((book) => book.shelf === shelf.camel)}
 						changeShelves={changeShelves}
+						isLoading={isLibraryLoading}
 					/>
 				))}
 			</div>
@@ -64,7 +65,8 @@ Home.propTypes = {
 				smallThumbnail: PropTypes.string
 			})
 		}).isRequired
-	).isRequired
+	).isRequired,
+	isLibraryLoading: PropTypes.bool.isRequired
 };
 
 export default Home;

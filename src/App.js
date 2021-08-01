@@ -13,11 +13,15 @@ import * as BooksAPI from "./BooksAPI";
 import "./App.css";
 
 const BooksApp = () => {
+	const [isLoading, setIsLoading] = useState(true);
 	const [books, setBooks] = useState([]);
 
 	useEffect(() => {
 		BooksAPI.getAll()
-			.then((requestBooks) => setBooks(requestBooks));
+			.then((requestBooks) => {
+				setBooks(requestBooks);
+				setIsLoading(false);
+			});
 	}, []);
 
 	const changeShelves = (bookId, shelf) => {
@@ -35,7 +39,11 @@ const BooksApp = () => {
 				exact
 				path="/"
 				render={() => (
-					<Home books={books} changeShelves={changeShelves} />
+					<Home
+						books={books}
+						changeShelves={changeShelves}
+						isLibraryLoading={isLoading}
+					/>
 				)}
 			/>
 
@@ -46,6 +54,7 @@ const BooksApp = () => {
 					<Search
 						books={books}
 						changeShelves={changeShelves}
+						isLibraryLoading={isLoading}
 					/>
 				)}
 			/>

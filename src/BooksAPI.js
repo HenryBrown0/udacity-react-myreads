@@ -40,7 +40,9 @@ export const search = (query, maxResults) => fetch(`${api}/search`, {
 	.then((res) => res.json())
 	.then((data) => {
 		if (data.books.error) {
-			console.warn(data.books.error); // eslint-disable-line
+			if (!data.books.error === "empty query") {
+				throw new Error(data.book.error);
+			}
 			return [];
 		}
 		return data.books;

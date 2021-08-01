@@ -7,6 +7,7 @@ import "../App.css";
 // Components
 import Header from "../components/Header";
 import BookThumbnail from "../components/BookThumbnail";
+import Loading from "../components/Loading";
 // ServerAPI
 import * as BooksAPI from "../BooksAPI";
 
@@ -32,7 +33,7 @@ const BookDetails = (props) => {
 		return (
 			<div className="bookshelf">
 				<Header title="Book Details" />
-				<div className="search-books-results">Loading...</div>
+				<div className="search-books-results"><Loading /></div>
 			</div>
 		);
 	}
