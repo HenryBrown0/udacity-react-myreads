@@ -3,6 +3,9 @@ logs
 *.log
 npm-debug.log*
 
+# Production
+dist
+
 # Runtime data
 pids
 *.pid
@@ -29,6 +32,9 @@ jspm_packages
 
 # Optional npm cache directory
 .npm
+
+# Optional parcel cache directory
+.cache
 
 # Optional REPL history
 .node_repl_history

@@ -1,20 +1,46 @@
 {
-  "dependencies": {
-    "escape-string-regexp": "^1.0.5",
-    "loadash": "^1.0.0",
-    "prop-types": "^15.5.8",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
-    "react-router-dom": "^4.2.2",
-    "sort-by": "^1.2.0"
-  },
-  "devDependencies": {
-    "react-scripts": "0.9.5"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+	"name": "udacity-react-myreads",
+	"version": "2.0.0",
+	"main": "src/index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/HenryBrown0/udacity-react-myreads.git"
+	},
+	"author": {
+		"name": "HenryBrown0",
+		"url": "https://henrybrown0.com"
+	},
+	"bugs": {
+		"url": "https://github.com/HenryBrown0/udacity-react-myreads/issues"
+	},
+	"license": "MIT",
+	"private": true,
+	"dependencies": {
+		"escape-string-regexp": "^4.0.0",
+		"prop-types": "^15.7.2",
+		"react": "^16.13.1",
+		"react-dom": "^16.13.1",
+		"react-router-dom": "^5.2.0"
+	},
+	"devDependencies": {
+		"eslint": "^7.6.0",
+		"eslint-config-airbnb": "^18.2.0",
+		"eslint-plugin-import": "^2.22.0",
+		"eslint-plugin-jsx-a11y": "^6.3.1",
+		"eslint-plugin-react": "^7.20.5",
+		"eslint-plugin-react-hooks": "^4.0.8",
+		"parcel-bundler": "^1.12.4"
+	},
+	"scripts": {
+		"start": "parcel public/index.html",
+		"build": "parcel build public/index.html",
+		"lint": "eslint src/*.js"
+	},
+	"browserslist": [
+		"since 2017-06"
+	],
+	"engines": {
+		"node": "^14.17.0",
+		"yarn": "^1.22"
+	}
 }

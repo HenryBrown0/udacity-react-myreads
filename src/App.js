@@ -1,64 +1,77 @@
-//Base
-import React from 'react'
-//Router
-import { Switch, Route } from 'react-router-dom'
-//Pages
-import Home from './Home'
-import Search from './Search'
-import BookDetails from './BookDetails'
-import NotFound from './NotFound'
-//ServerAPI
-import * as BooksAPI from './BooksAPI'
-//Styles
-import './App.css'
+// Base
+import React, { useState, useEffect } from "react";
+// Router
+import { Switch, Route } from "react-router-dom";
+// Pages
+import Home from "./views/Home";
+import Search from "./views/Search";
+import BookDetails from "./views/BookDetails";
+import NotFound from "./views/NotFound";
+// ServerAPI
+import * as BooksAPI from "./BooksAPI";
+// Styles
+import "./App.css";
 
-class BooksApp extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      books: []
-    }
-  }
+const BooksApp = () => {
+	const [isLoading, setIsLoading] = useState(true);
+	const [books, setBooks] = useState([]);
 
-  componentDidMount() {
-    BooksAPI.getAll().then((books) => this.setState({ books }))
-  }
+	useEffect(() => {
+		BooksAPI.getAll()
+			.then((requestBooks) => {
+				setBooks(requestBooks);
+				setIsLoading(false);
+			});
+	}, []);
 
-  changeShelves = (book, shelf) => {
-    book.shelf = shelf
-    BooksAPI.update(book, shelf).then(() => {
-      this.setState((prevState) => ({
-        books: prevState.books.filter((b) => b.title !== book.title).concat([book])
-      }));
-    })
-  }
+	const changeShelves = (bookId, shelf) => {
+		const book = books.find(({ id: bId }) => bId === bookId);
+		const arrayWithoutBook = books.filter(({ id: bId }) => bId !== bookId);
 
-  render() {
-    return (
-      <Switch className="app">
-        <Route exact path="/" render={() => (
-          <Home
-            books={this.state.books}
-            changeShelves={this.changeShelves}
-          />
-        )}/>
+		BooksAPI.update(bookId, shelf).then(() => {
+			setBooks(arrayWithoutBook.concat([{ ...book, shelf }]));
+		});
+	};
 
-        <Route exact path="/search/" render={() => (
-          <Search
-            books={this.state.books}
-            changeShelves={this.changeShelves}
-          />
-        )}/>
+	return (
+		<Switch className="app">
+			<Route
+				exact
+				path="/"
+				render={() => (
+					<Home
+						books={books}
+						changeShelves={changeShelves}
+						isLibraryLoading={isLoading}
+					/>
+				)}
+			/>
 
-        <Route path="/book/" render={() => (
-          <BookDetails
-            changeShelves={this.changeShelves}
-          />
-        )}/>
-		<Route component={NotFound} />
-      </Switch>
-    )
-  }
-}
+			<Route
+				exact
+				path="/search/"
+				render={() => (
+					<Search
+						books={books}
+						changeShelves={changeShelves}
+						isLibraryLoading={isLoading}
+					/>
+				)}
+			/>
 
-export default BooksApp
+			<Route
+				exact
+				path="/book/:bookId"
+				render={() => (
+					<BookDetails
+						changeShelves={changeShelves}
+						books={books}
+					/>
+				)}
+			/>
+			<Route component={NotFound} />
+		</Switch>
+	);
+};
+
+export default BooksApp;
